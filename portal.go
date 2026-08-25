@@ -1,6 +1,7 @@
 package hospitalportal
 
 import (
+	"errors"
 	"fmt"
 	"hospitalportal/internal/account"
 	"hospitalportal/internal/audit"
@@ -53,9 +54,10 @@ func (p *Portal) ActivateAccountAndPublishShift(actorID, accountID, shiftID, tit
 	}
 	accountValue, err := p.Accounts.Activate(accountID)
 	if err != nil {
-		if err == domain.ErrAccountState {
+		if errors.Is(err, domain.ErrAccountState) {
 			return domain.DutyShift{}, err
 		}
+		return domain.DutyShift{}, fmt.Errorf("activate account: %w", err)
 	}
 	shift, err := p.Schedules.Create(schedule.CreateCommand{ID: shiftID, DepartmentID: accountValue.DepartmentID, AccountID: accountID, Title: title, StartAt: start, EndAt: end})
 	if err != nil {
