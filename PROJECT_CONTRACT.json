@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2681,
+    "production_files": 20,
+    "production_packages": 9,
+    "test_files": 9,
+    "production_functions": 112,
+    "decision_points": 171
+  },
+  "persistence": {
+    "module": "go.etcd.io/bbolt",
+    "entities": [
+      "UserAccount",
+      "Department",
+      "DutyShift",
+      "AuditRecord"
+    ],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {
+      "steps": [
+        "create a pending clinical account",
+        "activate the account through the account service",
+        "reject an invalid repeated activation state",
+        "stop before creating or publishing a duty shift"
+      ],
+      "test": "TestBusinessChain33"
+    },
+    {
+      "steps": [
+        "create a draft department",
+        "update its contact details and clinical services",
+        "activate the complete department profile",
+        "load the department and verify its directory data"
+      ],
+      "test": "TestDepartmentWorkflow"
+    },
+    {
+      "steps": [
+        "select an active department and nurse account",
+        "create a non-conflicting duty shift",
+        "publish the validated shift",
+        "query the schedule window and verify publication"
+      ],
+      "test": "TestDutyWorkflow"
+    }
+  ]
+}
